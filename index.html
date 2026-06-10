@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ניהול הזמנות — בית דפוס</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;direction:rtl;background:#0f0f13;color:#e8e8f0;min-height:100vh}
+input,select,textarea,button{font-family:Arial,sans-serif;font-size:14px;border-radius:8px;border:1px solid #2e2e3e;padding:7px 11px;outline:none;direction:rtl;background:#1a1a26;color:#e8e8f0}
+input:focus,select:focus,textarea:focus{border-color:#7c6af7;box-shadow:0 0 0 3px rgba(124,106,247,0.15)}
+select option{background:#1a1a26}
+.app{max-width:960px;margin:0 auto;padding:1.5rem 1rem}
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
+.hdr-title{font-size:22px;font-weight:700;background:linear-gradient(90deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sync-wrap{display:flex;align-items:center;gap:6px}
+.sync-dot{width:9px;height:9px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399;display:inline-block}
+.sync-dot.syncing{background:#fbbf24;box-shadow:0 0 6px #fbbf24;animation:pulse 1s infinite}
+.sync-dot.error{background:#f87171;box-shadow:0 0 6px #f87171}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.sync-lbl{font-size:12px;color:#888}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.5rem}
+.stat{border-radius:14px;border:1px solid #2e2e3e;padding:16px;text-align:center}
+.stat-n{font-size:28px;font-weight:700}
+.stat-l{font-size:12px;margin-top:4px;font-weight:600}
+.stat-hold{background:#1e1228;border-color:#4a2a5e}.stat-hold .stat-n{color:#d19eff}.stat-hold .stat-l{color:#9b6ec7}
+.stat-prod{background:#0b1929;border-color:#1a3a6e}.stat-prod .stat-n{color:#60a5fa}.stat-prod .stat-l{color:#3b7dd8}
+.stat-ready{background:#071a10;border-color:#0d3d28}.stat-ready .stat-n{color:#34d399}.stat-ready .stat-l{color:#1e9e6b}
+.controls{display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.sw{position:relative;flex:1;min-width:150px}
+.sw span{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:#666;pointer-events:none}
+.sw input{padding-right:34px;width:100%}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:9px 16px;border-radius:10px;cursor:pointer;font-weight:600;transition:all 0.15s;border:none}
+.btn-new{background:#7c3aed;color:#fff;box-shadow:0 4px 14px rgba(124,58,237,0.4)}
+.btn-new:hover{background:#6d28d9;transform:translateY(-1px)}
+.btn-export{background:#1e293b;color:#94a3b8;border:1px solid #334155}
+.btn-export:hover{background:#273449;color:#e2e8f0}
+.btn-print{background:#065f46;color:#6ee7b7;border:1px solid #059669}
+.btn-print:hover{background:#047857;color:#fff}
+.btn-cancel{background:#1e1e2e;color:#888;border:1px solid #2e2e3e;padding:9px 16px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600}
+.btn-cancel:hover{color:#fff;background:#2e2e3e}
+.btn-save{background:#7c3aed;color:#fff;padding:9px 20px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:700;border:none}
+.btn-save:hover{background:#6d28d9}
+.btn-add-job{background:#064e3b;color:#6ee7b7;border:none;padding:7px 13px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:5px;transition:all 0.15s}
+.btn-add-job:hover{background:#065f46}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;backdrop-filter:blur(4px)}
+.overlay.open{display:flex}
+.modal{background:#13131f;border:1px solid #2e2e3e;border-radius:16px;padding:1.6rem;width:100%;max-width:500px;margin-top:20px;box-shadow:0 24px 60px rgba(0,0,0,0.7)}
+.mhdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;padding-bottom:12px;border-bottom:1px solid #2e2e3e}
+.mtitle{font-size:17px;font-weight:700}
+.xbtn{background:#1e1e2e;border:1px solid #2e2e3e;cursor:pointer;font-size:16px;color:#888;padding:5px 8px;border-radius:7px}
+.xbtn:hover{background:#2e2e3e;color:#fff}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}
+.fg label{font-size:12px;color:#888;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.fg textarea{resize:vertical;min-height:60px;line-height:1.6}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mftr{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;padding-top:14px;border-top:1px solid #2e2e3e}
+.install-check{display:flex;flex-direction:row !important;align-items:center;gap:10px;background:#1a1200;border:1px solid #f59e0b !important;border-radius:8px;padding:10px 14px;cursor:pointer;margin-bottom:13px}
+.install-check input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:#f59e0b;flex-shrink:0;background:#1a1a26;border:1px solid #f59e0b}
+.install-check label{font-size:14px;color:#fbbf24;font-weight:700;cursor:pointer}
+.clients-list{display:flex;flex-direction:column;gap:10px}
+.client-card{background:#13131d;border-radius:14px;border:1px solid #2e2e3e;overflow:hidden;transition:border-color 0.3s}
+.client-card.has-ready{border-color:#059669;box-shadow:0 0 0 1px #059669}
+.client-header{display:flex;align-items:center;justify-content:space-between;padding:13px 16px;cursor:pointer;user-select:none;transition:background 0.15s}
+.client-header:hover{background:#1a1a26}
+.client-name-wrap{display:flex;align-items:center;gap:10px;flex:1;flex-wrap:wrap}
+.client-name{font-size:16px;font-weight:700;color:#e8e8f0}
+.client-name.ready-glow{color:#34d399;animation:nameGlow 1.4s ease-in-out infinite}
+@keyframes nameGlow{0%,100%{opacity:1;text-shadow:0 0 8px #34d399}50%{opacity:0.6;text-shadow:none}}
+.client-badge{font-size:11px;background:#1e1a35;color:#a78bfa;padding:2px 8px;border-radius:8px;border:1px solid #3d3460;font-weight:600;white-space:nowrap}
+.status-pills{display:flex;gap:5px;flex-wrap:wrap}
+.spill{font-size:11px;padding:3px 9px;border-radius:20px;font-weight:700;white-space:nowrap}
+.spill-hold{background:#2d1545;color:#d19eff;border:1px solid #7c3aed}
+.spill-prod{background:#0f2744;color:#93c5fd;border:1px solid #2563eb}
+.spill-ready{background:#052e16;color:#6ee7b7;border:1px solid #059669;animation:pillPulse 1.4s ease-in-out infinite}
+.spill-install{background:#292000;color:#fbbf24;border:1px solid #f59e0b}
+@keyframes pillPulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,0.5)}50%{box-shadow:0 0 0 4px rgba(52,211,153,0)}}
+.chevron{color:#555;font-size:11px;transition:transform 0.2s;margin-right:6px}
+.chevron.open{transform:rotate(180deg)}
+.client-jobs{display:none;border-top:1px solid #2e2e3e}
+.client-jobs.open{display:block}
+.client-jobs-inner{padding:10px 14px;display:flex;flex-direction:column;gap:8px}
+.job-row{background:#1a1a26;border-radius:10px;border:1px solid #2e2e3e;padding:10px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;transition:border-color 0.3s}
+.job-row.job-ready{border-color:#059669}
+.job-row.job-install{border-color:#f59e0b}
+.job-type{flex:1;min-width:120px;font-size:13px;font-weight:600;color:#a78bfa}
+.install-tag{font-size:11px;background:#292000;color:#fbbf24;padding:2px 8px;border-radius:20px;border:1px solid #f59e0b;font-weight:700}
+.job-meta{font-size:12px;color:#666;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.job-price{font-size:12px;color:#fbbf24;font-weight:700}
+.job-notes{font-size:12px;color:#555;font-style:italic;width:100%;margin-top:2px}
+.job-actions{display:flex;gap:4px}
+.ssel{font-size:12px;border-radius:8px;padding:4px 7px;cursor:pointer;font-weight:700;border:2px solid transparent}
+.s-hold{background:#2d1545;color:#d19eff;border-color:#7c3aed}
+.s-prod{background:#0f2744;color:#93c5fd;border-color:#2563eb}
+.s-ready{background:#052e16;color:#6ee7b7;border-color:#059669}
+.ibtn{border:none;cursor:pointer;padding:6px 8px;border-radius:8px;font-size:14px;transition:all 0.15s}
+.ibtn-send{background:#064e3b;color:#6ee7b7}
+.ibtn-send:hover{background:#065f46;transform:scale(1.08)}
+.ibtn-edit{background:#1e3a5f;color:#93c5fd}
+.ibtn-edit:hover{background:#1e40af;transform:scale(1.08)}
+.ibtn-del{background:#450a0a;color:#fca5a5}
+.ibtn-del:hover{background:#7f1d1d;transform:scale(1.08)}
+.add-job-row{padding:10px 14px;border-top:1px solid #1e1e2e}
+.sum-box{background:#1a1a26;border-radius:10px;padding:16px;margin-bottom:14px;font-size:13px;line-height:2;white-space:pre-wrap;direction:rtl;text-align:right;border:1px solid #2e2e3e;color:#ccc}
+.sum-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-copy{background:#1e3a5f;color:#93c5fd;padding:9px 15px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;border:none}
+.btn-copy:hover{background:#1e40af}
+.btn-wa{background:#064e3b;color:#6ee7b7;padding:9px 15px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;border:none}
+.btn-wa:hover{background:#065f46}
+.btn-mail{background:#1e1e2e;color:#ccc;padding:9px 15px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;border:1px solid #2e2e3e}
+.btn-mail:hover{background:#2e2e3e;color:#fff}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;font-size:13px;font-weight:700;padding:11px 26px;border-radius:12px;opacity:0;transition:opacity 0.25s;pointer-events:none;white-space:nowrap;z-index:999;box-shadow:0 4px 20px rgba(124,58,237,0.5)}
+.toast.show{opacity:1}
+.empty{text-align:center;padding:3rem;color:#444;font-size:14px}
+.loading{text-align:center;padding:3rem;color:#555;font-size:14px}
+.autocomplete-wrap{position:relative}
+.autocomplete-list{position:absolute;top:100%;right:0;left:0;background:#1a1a26;border:1px solid #7c6af7;border-radius:8px;z-index:50;max-height:160px;overflow-y:auto;margin-top:2px}
+.autocomplete-item{padding:8px 12px;cursor:pointer;font-size:13px}
+.autocomplete-item:hover{background:#2e2e3e;color:#fff}
+@media print{
+  body{background:#fff !important;color:#000 !important}
+  .app>*:not(#print-area){display:none !important}
+  #print-area{display:block !important}
+}
+#print-area{display:none}
+.print-page{font-family:Arial,sans-serif;direction:rtl;padding:20px;color:#000}
+.print-title{text-align:center;font-size:20px;font-weight:700;margin-bottom:6px;border-bottom:2px solid #000;padding-bottom:8px}
+.print-date{text-align:center;font-size:12px;color:#555;margin-bottom:20px}
+.print-table{width:100%;border-collapse:collapse;font-size:13px}
+.print-table th{background:#f0f0f0;padding:8px 10px;text-align:right;border:1px solid #ccc;font-weight:700}
+.print-table td{padding:8px 10px;border:1px solid #ddd;text-align:right;vertical-align:top}
+.print-table tr:nth-child(even) td{background:#fafafa}
+@media(max-width:600px){.g2{grid-template-columns:1fr}.job-row{flex-direction:column;align-items:flex-start}.status-pills{margin-top:4px}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="toast" id="toast"></div>
+<div class="hdr">
+  <span class="hdr-title">🖨️ ניהול הזמנות — בית דפוס</span>
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+    <span class="sync-wrap">
+      <span class="sync-dot" id="sync-dot"></span>
+      <span class="sync-lbl" id="sync-lbl">מתחבר...</span>
+    </span>
+    <button class="btn btn-export" onclick="exportCSV()">⬇️ ייצוא Excel</button>
+    <button class="btn btn-print" onclick="printReady()">🖨️ הדפס מוכנות</button>
+    <button class="btn btn-new" onclick="openNewOrder()">＋ הזמנה חדשה</button>
+  </div>
+</div>
+<div class="stats-row">
+  <div class="stat stat-hold"><div class="stat-n" id="s-hold">0</div><div class="stat-l">🟣 בהמתנה</div></div>
+  <div class="stat stat-prod"><div class="stat-n" id="s-prod">0</div><div class="stat-l">🔵 בייצור</div></div>
+  <div class="stat stat-ready"><div class="stat-n" id="s-ready">0</div><div class="stat-l">🟢 מוכן</div></div>
+</div>
+<div class="controls">
+  <div class="sw">
+    <span>🔍</span>
+    <input type="text" id="qinput" placeholder="חיפוש לפי שם לקוח..." oninput="render()"/>
+  </div>
+  <select id="fstatus" onchange="render()" style="min-width:130px">
+    <option value="">כל הסטטוסים</option>
+    <option value="hold">🟣 בהמתנה</option>
+    <option value="prod">🔵 בייצור</option>
+    <option value="ready">🟢 מוכן</option>
+  </select>
+</div>
+
+<div class="overlay" id="ov-order">
+  <div class="modal">
+    <div class="mhdr">
+      <span class="mtitle" id="mtitle">＋ הזמנה חדשה</span>
+      <button class="xbtn" onclick="closeAll()">✕</button>
+    </div>
+    <div class="fg">
+      <label>👤 שם לקוח *</label>
+      <div class="autocomplete-wrap">
+        <input type="text" id="f-name" placeholder="שם מלא או לקוח קיים" oninput="acInput()" autocomplete="off"/>
+        <div class="autocomplete-list" id="ac-list" style="display:none"></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="fg"><label>📞 טלפון</label><input type="tel" id="f-phone" placeholder="050-0000000"/></div>
+      <div class="fg"><label>💰 מחיר (₪)</label><input type="number" id="f-price" placeholder="0" min="0"/></div>
+    </div>
+    <div class="fg"><label>🖨️ תיאור העבודה *</label><input type="text" id="f-type" placeholder="למשל: שלט חיצוני, קאפה, באנר..."/></div>
+    <div class="g2">
+      <div class="fg"><label>📅 תאריך כניסה *</label><input type="date" id="f-date"/></div>
+      <div class="fg"><label>🗓️ תאריך מסירה</label><input type="date" id="f-due"/></div>
+    </div>
+    <div class="fg"><label>📌 סטטוס</label>
+      <select id="f-status">
+        <option value="hold">🟣 בהמתנה</option>
+        <option value="prod">🔵 בייצור</option>
+        <option value="ready">🟢 מוכן</option>
+      </select>
+    </div>
+    <div class="install-check">
+      <input type="checkbox" id="f-install"/>
+      <label for="f-install">🔧 הזמנה מצריכה התקנה שלנו</label>
+    </div>
+    <div class="fg"><label>📝 פירוט עבודה</label>
+      <textarea id="f-notes" placeholder="קאפה 50/70 = 100&#10;באנר 300/100 = 300" oninput="calcFromNotes()"></textarea>
+      <span style="font-size:11px;color:#888">מספר אחרי = בסוף שורה יחושב אוטומטית ⬇️</span>
+    </div>
+    <div class="mftr">
+      <button class="btn-cancel" onclick="closeAll()">ביטול</button>
+      <button class="btn-save" onclick="saveOrder()">✔ שמור הזמנה</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="ov-sum">
+  <div class="modal">
+    <div class="mhdr">
+      <span class="mtitle">📤 סיכום הזמנה</span>
+      <button class="xbtn" onclick="closeAll()">✕</button>
+    </div>
+    <div class="sum-box" id="sum-text"></div>
+    <div class="sum-actions">
+      <button class="btn-copy" onclick="copySum()">📋 העתק</button>
+      <button class="btn-wa" onclick="sendWA()">💬 ווטסאפ</button>
+      <button class="btn-mail" onclick="sendMail()">✉️ מייל</button>
+    </div>
+    <p style="margin-top:10px;font-size:12px;color:#444">נפתח אצלך — אין צורך בשום תוכנה נוספת</p>
+  </div>
+</div>
+
+<div class="clients-list" id="clients-list">
+  <div class="loading">⏳ טוען הזמנות מ-Google Sheets...</div>
+</div>
+<div id="print-area"></div>
+</div>
+
+<script>
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbzqOJSjmxescX4svzSfFb00K6NcbGfOzN2wpnQ8lJ2RGgQmZdiPcT8tdfMSC1tXr5H9/exec';
+const SL={hold:'בהמתנה',prod:'בייצור',ready:'מוכן'};
+const SLR={'בהמתנה':'hold','בייצור':'prod','מוכן':'ready'};
+const SC={hold:'s-hold',prod:'s-prod',ready:'s-ready'};
+let orders=[],nextId=1001,editJobId=null,sumOrder=null,openClients=new Set();
+
+function setSyncState(s){
+  const dot=document.getElementById('sync-dot'),lbl=document.getElementById('sync-lbl');
+  dot.className='sync-dot';
+  if(s==='syncing'){dot.classList.add('syncing');lbl.textContent='שומר...';}
+  else if(s==='ok'){lbl.textContent='מחובר ל-Sheets ✓';}
+  else{dot.classList.add('error');lbl.textContent='שגיאת חיבור';}
+}
+
+async function loadFromSheets(){
+  setSyncState('syncing');
+  try{
+    const res=await fetch(SHEETS_URL+'?t='+Date.now());
+    const raw=await res.json();
+    orders=raw.map((row,i)=>{
+      const status=SLR[row['סטטוס']]||'hold';
+      const id=parseInt(row['מספר'])||1001+i;
+      if(id>=nextId)nextId=id+1;
+      return{
+        id,
+        name:  String(row['שם לקוח']  ||'').trim(),
+        type:  String(row['סוג עבודה']||'').trim(),
+        date:  fmtIn(row['תאריך כניסה']),
+        due:   fmtIn(row['תאריך מסירה']),
+        status,
+        notes: String(row['הערות']    ||'').trim(),
+        phone: String(row['טלפון']    ||'').trim(),
+        price: String(row['מחיר']     ||'').trim(),
+        install: ['כן','true','TRUE','1'].includes(String(row['התקנה']||'').trim())
+      };
+    }).filter(o=>o.name);
+    setSyncState('ok');
+    render();
+  }catch(e){
+    setSyncState('error');
+    document.getElementById('clients-list').innerHTML='<div class="empty">⚠️ לא ניתן לטעון — בדוק חיבור אינטרנט</div>';
+  }
+}
+
+function fmtIn(d){
+  if(!d)return'';
+  const s=String(d).trim();
+  if(s.includes('-'))return s.substring(0,10);
+  if(s.includes('/')){const p=s.split('/');if(p.length===3)return`${p[2].substring(0,4)}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;}
+  return'';
+}
+
+async function syncToSheets(action,data){
+  setSyncState('syncing');
+  try{
+    await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,...data})});
+    setSyncState('ok');
+  }catch(e){setSyncState('error');showToast('⚠️ שגיאה בחיבור');}
+}
+
+function getClientNames(){return[...new Set(orders.map(o=>o.name))].sort();}
+
+function acInput(){
+  const val=document.getElementById('f-name').value.trim().toLowerCase();
+  const list=document.getElementById('ac-list');
+  if(!val){list.style.display='none';return;}
+  const matches=getClientNames().filter(n=>n.toLowerCase().includes(val));
+  if(!matches.length){list.style.display='none';return;}
+  list.innerHTML=matches.map(n=>`<div class="autocomplete-item" onclick="selectClient(this.dataset.name)" data-name="${n.replace(/"/g,'&quot;')}">👤 ${n}</div>`).join('');
+  list.style.display='block';
+}
+function selectClient(name){
+  document.getElementById('f-name').value=name;
+  document.getElementById('ac-list').style.display='none';
+  const ex=orders.find(o=>o.name===name&&o.phone);
+  if(ex)document.getElementById('f-phone').value=ex.phone;
+  document.getElementById('f-type').focus();
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete-wrap'))document.getElementById('ac-list').style.display='none';});
+
+function resetForm(){
+  ['f-name','f-phone','f-type','f-price','f-notes'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('f-status').value='hold';
+  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('f-due').value='';
+  document.getElementById('f-install').checked=false;
+  document.getElementById('ac-list').style.display='none';
+}
+
+function openNewOrder(){
+  editJobId=null;
+  document.getElementById('mtitle').textContent='＋ הזמנה חדשה';
+  resetForm();
+  document.getElementById('ov-order').classList.add('open');
+  setTimeout(()=>document.getElementById('f-name').focus(),50);
+}
+
+function openAddJobForClient(clientName){
+  editJobId=null;
+  document.getElementById('mtitle').textContent='＋ הזמנה ל: '+clientName;
+  resetForm();
+  document.getElementById('f-name').value=clientName;
+  const ex=orders.find(o=>o.name===clientName&&o.phone);
+  if(ex)document.getElementById('f-phone').value=ex.phone;
+  document.getElementById('ov-order').classList.add('open');
+  setTimeout(()=>document.getElementById('f-type').focus(),50);
+}
+
+function openEdit(id){
+  editJobId=id;
+  const o=orders.find(x=>x.id===id);
+  document.getElementById('mtitle').textContent='✏️ עריכת הזמנה #'+id;
+  document.getElementById('f-name').value=o.name;
+  document.getElementById('f-phone').value=o.phone||'';
+  document.getElementById('f-type').value=o.type;
+  document.getElementById('f-price').value=o.price||'';
+  document.getElementById('f-date').value=o.date;
+  document.getElementById('f-due').value=o.due||'';
+  document.getElementById('f-status').value=o.status;
+  document.getElementById('f-install').checked=o.install||false;
+  document.getElementById('f-notes').value=o.notes||'';
+  document.getElementById('ac-list').style.display='none';
+  document.getElementById('ov-order').classList.add('open');
+}
+
+function closeAll(){
+  document.getElementById('ov-order').classList.remove('open');
+  document.getElementById('ov-sum').classList.remove('open');
+}
+
+function saveOrder(){
+  const name=document.getElementById('f-name').value.trim();
+  const type=document.getElementById('f-type').value.trim();
+  const date=document.getElementById('f-date').value;
+  if(!name||!type||!date){showToast('⚠️ נא למלא שם לקוח, עבודה ותאריך');return;}
+  const obj={
+    name,type,date,
+    phone:  document.getElementById('f-phone').value.trim(),
+    price:  document.getElementById('f-price').value.trim(),
+    due:    document.getElementById('f-due').value,
+    status: document.getElementById('f-status').value,
+    install:document.getElementById('f-install').checked,
+    notes:  document.getElementById('f-notes').value.trim()
+  };
+  if(editJobId){
+    const i=orders.findIndex(x=>x.id===editJobId);
+    orders[i]={...orders[i],...obj};
+    syncToSheets('save',{order:orders[i]});
+    showToast('✅ הזמנה עודכנה');
+  }else{
+    obj.id=nextId++;
+    orders.unshift(obj);
+    openClients.add(name);
+    syncToSheets('save',{order:obj});
+    showToast('✅ הזמנה נוספה');
+  }
+  closeAll();render();
+}
+
+function delOrder(id){
+  if(!confirm('למחוק?'))return;
+  orders=orders.filter(o=>o.id!==id);
+  syncToSheets('delete',{id});
+  render();showToast('🗑️ נמחקה');
+}
+
+function chStatus(id,v){
+  const o=orders.find(x=>x.id===id);
+  if(o){o.status=v;syncToSheets('save',{order:o});render();}
+}
+
+function toggleClient(name){
+  if(openClients.has(name))openClients.delete(name);
+  else openClients.add(name);
+  render();
+}
+
+function fmtDate(d){if(!d)return'—';const p=d.split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:'—';}
+function isOverdue(o){if(!o.due||o.status==='ready')return false;return new Date(o.due)<new Date(new Date().toISOString().split('T')[0]);}
+
+function calcFromNotes(){
+  const txt=document.getElementById('f-notes').value;
+  const lines=txt.split('\n');
+  let total=0;
+  lines.forEach(line=>{
+    const m=line.match(/=\s*(\d+(?:\.\d+)?)\s*$/);
+    if(m)total+=parseFloat(m[1])||0;
+  });
+  if(total>0)document.getElementById('f-price').value=total;
+  else document.getElementById('f-price').value='';
+}
+
+function buildSummary(o){
+  let t='📋 סיכום הזמנה #'+o.id+'\n━━━━━━━━━━━━━━━━\n';
+  t+='👤 לקוח: '+o.name+'\n';
+  if(o.phone)t+='📞 טלפון: '+o.phone+'\n';
+  t+='🖨️ עבודה: '+o.type+'\n';
+  if(o.install)t+='🔧 נדרשת התקנה שלנו\n';
+  t+='\n📅 תאריך כניסה: '+fmtDate(o.date)+'\n';
+  if(o.due&&o.due!=='—')t+='🗓️ תאריך מסירה: '+fmtDate(o.due)+'\n';
+  if(o.price)t+='💰 מחיר: ₪'+Number(o.price).toLocaleString()+' + מע"מ\n';
+  t+='📌 סטטוס: '+SL[o.status]+'\n';
+  if(o.notes)t+='\n📝 פירוט עבודה:\n'+o.notes+'\n';
+  t+='\n━━━━━━━━━━━━━━━━';
+  return t;
+}
+
+function openSum(id){
+  sumOrder=orders.find(x=>x.id===id);
+  document.getElementById('sum-text').textContent=buildSummary(sumOrder);
+  document.getElementById('ov-sum').classList.add('open');
+}
+function copySum(){
+  const txt=document.getElementById('sum-text').textContent;
+  navigator.clipboard.writeText(txt).then(()=>showToast('📋 הועתק!')).catch(()=>{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('📋 הועתק!');});
+}
+function sendWA(){
+  if(!sumOrder)return;
+  const txt=encodeURIComponent(buildSummary(sumOrder));
+  const phone=sumOrder.phone?sumOrder.phone.replace(/\D/g,''):'';
+  if(phone){
+    const num=phone.startsWith('0')?'972'+phone.substring(1):phone;
+    window.open(`whatsapp://send?phone=${num}&text=${txt}`,'_blank');
+  }else{
+    window.open(`https://wa.me/?text=${txt}`,'_blank');
+  }
+}
+function sendMail(){
+  if(!sumOrder)return;
+  window.open(`mailto:?subject=${encodeURIComponent('סיכום הזמנה #'+sumOrder.id)}&body=${encodeURIComponent(buildSummary(sumOrder))}`,'_blank');
+}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+function printReady(){
+  const readyOrders=orders.filter(o=>o.status==='ready');
+  if(!readyOrders.length){showToast('⚠️ אין הזמנות מוכנות להדפסה');return;}
+  const now=new Date().toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  const rows=readyOrders.map(o=>{
+    let detailHtml='';
+    if(o.notes){
+      const lines=o.notes.split('\n').filter(l=>l.trim());
+      detailHtml='<ul style="margin:0;padding:0;list-style:none">'+lines.map(line=>{
+        const m=line.match(/=\s*(\d+(?:\.\d+)?)\s*$/);
+        const linePrice=m?'<span style="float:left;font-weight:700">₪'+Number(m[1]).toLocaleString()+'</span>':'';
+        const lineTxt=line.replace(/=\s*\d+(?:\.\d+)?\s*$/,'').trim();
+        return`<li style="padding:2px 0;border-bottom:1px solid #eee;overflow:hidden">${lineTxt}${linePrice}</li>`;
+      }).join('')+'</ul>';
+    }
+    return`<tr>
+      <td style="color:#888;font-size:12px">#${o.id}</td>
+      <td><strong>${o.name}</strong>${o.phone?`<br><span style="font-size:11px;color:#666">${o.phone}</span>`:''}${o.install?'<br><span style="font-size:11px;background:#fff3cd;color:#856404;padding:1px 6px;border-radius:3px">🔧 התקנה</span>':''}</td>
+      <td>${o.type}</td>
+      <td style="color:#666">${fmtDate(o.date)}</td>
+      <td>${detailHtml||'—'}</td>
+      <td><strong>${o.price?'₪'+Number(o.price).toLocaleString()+' + מע"מ':'—'}</strong></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('print-area').innerHTML=`<div class="print-page">
+    <div class="print-title">🖨️ הזמנות מוכנות לאיסוף — בית דפוס</div>
+    <div class="print-date">הודפס: ${now} | סה"כ ${readyOrders.length} הזמנות</div>
+    <table class="print-table">
+      <thead><tr><th style="width:7%">#</th><th style="width:18%">לקוח</th><th style="width:15%">עבודה</th><th style="width:11%">כניסה</th><th style="width:30%">פירוט</th><th style="width:19%">מחיר</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+  window.print();
+}
+
+function filtered(){
+  const q=document.getElementById('qinput').value.toLowerCase();
+  const fs=document.getElementById('fstatus').value;
+  return orders.filter(o=>(!q||o.name.toLowerCase().includes(q))&&(!fs||o.status===fs));
+}
+
+function render(){
+  const list=filtered();
+  const container=document.getElementById('clients-list');
+  const clientMap=new Map();
+  list.forEach(o=>{
+    if(!clientMap.has(o.name))clientMap.set(o.name,[]);
+    clientMap.get(o.name).push(o);
+  });
+  if(!clientMap.size){
+    container.innerHTML=`<div class="empty">${orders.length?'🔍 לא נמצאו תוצאות':'אין הזמנות עדיין — לחץ "הזמנה חדשה" להתחיל'}</div>`;
+    updateStats();return;
+  }
+  container.innerHTML=[...clientMap.entries()].map(([name,jobs])=>{
+    const isOpen=openClients.has(name);
+    const safeName=name.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+    const hasReady=jobs.some(j=>j.status==='ready');
+    const hasInstall=jobs.some(j=>j.install);
+    const statusCounts={hold:0,prod:0,ready:0};
+    jobs.forEach(j=>statusCounts[j.status]=(statusCounts[j.status]||0)+1);
+    const pillsHtml=Object.entries(statusCounts).filter(([,c])=>c>0).map(([s,c])=>`<span class="spill spill-${s}">${c} ${SL[s]}</span>`).join('')+(hasInstall?'<span class="spill spill-install">🔧 התקנה</span>':'');
+    const jobsHtml=jobs.map(o=>{
+      const od=isOverdue(o);
+      return`<div class="job-row${o.status==='ready'?' job-ready':''}${o.install?' job-install':''}">
+        <div class="job-type">🖨️ ${o.type}${o.install?' <span class="install-tag">🔧 התקנה</span>':''}</div>
+        <div class="job-meta">
+          <span>📅 ${fmtDate(o.date)}</span>
+          ${o.due?`<span style="${od?'color:#f87171;font-weight:700':''}">🗓️ ${fmtDate(o.due)}${od?' ⚠':''}</span>`:''}
+          ${o.phone?`<span>📞 ${o.phone}</span>`:''}
+          ${o.price?`<span class="job-price">💰 ₪${Number(o.price).toLocaleString()}</span>`:''}
+        </div>
+        <select class="ssel ${SC[o.status]}" onchange="chStatus(${o.id},this.value)">${Object.entries(SL).map(([k,v])=>`<option value="${k}"${o.status===k?' selected':''}>${v}</option>`).join('')}</select>
+        <div class="job-actions">
+          <button class="ibtn ibtn-send" onclick="openSum(${o.id})" title="שלח סיכום">📤</button>
+          <button class="ibtn ibtn-edit" onclick="openEdit(${o.id})" title="עריכה">✏️</button>
+          <button class="ibtn ibtn-del" onclick="delOrder(${o.id})" title="מחיקה">🗑️</button>
+        </div>
+        ${o.notes?`<div class="job-notes">📝 ${o.notes}</div>`:''}
+      </div>`;
+    }).join('');
+    return`<div class="client-card${hasReady?' has-ready':''}">
+      <div class="client-header" data-name="${safeName}" onclick="toggleClient(this.dataset.name)">
+        <div class="client-name-wrap">
+          <span class="client-name${hasReady?' ready-glow':''}">👤 ${name}</span>
+          <span class="client-badge">${jobs.length} הזמנ${jobs.length===1?'ה':'ות'}</span>
+          <div class="status-pills">${pillsHtml}</div>
+        </div>
+        <span class="chevron ${isOpen?'open':''}">▼</span>
+      </div>
+      <div class="client-jobs ${isOpen?'open':''}">
+        <div class="client-jobs-inner">${jobsHtml}</div>
+        <div class="add-job-row">
+          <button class="btn-add-job" data-name="${safeName}" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה ל${name}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  updateStats();
+}
+
+function updateStats(){
+  document.getElementById('s-hold').textContent=orders.filter(o=>o.status==='hold').length;
+  document.getElementById('s-prod').textContent=orders.filter(o=>o.status==='prod').length;
+  document.getElementById('s-ready').textContent=orders.filter(o=>o.status==='ready').length;
+}
+
+function exportCSV(){
+  if(!orders.length){showToast('⚠️ אין הזמנות לייצוא');return;}
+  const h=['מספר','שם לקוח','סוג עבודה','תאריך כניסה','תאריך מסירה','סטטוס','הערות','טלפון','מחיר','התקנה'];
+  const rows=orders.map(o=>[o.id,o.name,o.type,fmtDate(o.date),fmtDate(o.due),SL[o.status],o.notes||'',o.phone||'',o.price||'',o.install?'כן':'']);
+  const csv='\uFEFF'+[h,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='הזמנות.csv';a.click();
+  showToast('✅ הורד בהצלחה');
+}
+
+loadFromSheets();
+</script>
+</body>
+</html>
