@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<!-- saved from url=(0121)file:///C:/Users/user1/Downloads/%D7%94%D7%96%D7%9E%D7%A0%D7%95%D7%AA-%D7%91%D7%99%D7%AA-%D7%93%D7%A4%D7%95%D7%A1_34.html -->
-<html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ניהול הזמנות — בית דפוס</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -152,13 +152,13 @@ select option{background:#1a1a26}
 </head>
 <body>
 <div class="app">
-<div class="toast" id="toast">🗑️ נמחקה</div>
+<div class="toast" id="toast"></div>
 <div class="hdr">
   <span class="hdr-title">🖨️ ניהול הזמנות — בית דפוס</span>
   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
     <span class="sync-wrap">
       <span class="sync-dot" id="sync-dot"></span>
-      <span class="sync-lbl" id="sync-lbl">מחובר ל-Sheets ✓</span>
+      <span class="sync-lbl" id="sync-lbl">מתחבר...</span>
     </span>
     <button class="btn btn-export" onclick="exportCSV()">⬇️ ייצוא Excel</button>
     <button class="btn btn-print" onclick="printReady()">🖨️ הדפס מוכנות</button>
@@ -166,14 +166,14 @@ select option{background:#1a1a26}
   </div>
 </div>
 <div class="stats-row">
-  <div class="stat stat-hold"><div class="stat-n" id="s-hold">13</div><div class="stat-l">🟣 בהמתנה</div></div>
-  <div class="stat stat-prod"><div class="stat-n" id="s-prod">6</div><div class="stat-l">🔵 בייצור</div></div>
-  <div class="stat stat-ready"><div class="stat-n" id="s-ready">7</div><div class="stat-l">🟢 מוכן</div></div>
+  <div class="stat stat-hold"><div class="stat-n" id="s-hold">0</div><div class="stat-l">🟣 בהמתנה</div></div>
+  <div class="stat stat-prod"><div class="stat-n" id="s-prod">0</div><div class="stat-l">🔵 בייצור</div></div>
+  <div class="stat stat-ready"><div class="stat-n" id="s-ready">0</div><div class="stat-l">🟢 מוכן</div></div>
 </div>
 <div class="controls">
   <div class="sw">
     <span>🔍</span>
-    <input type="text" id="qinput" placeholder="חיפוש לפי שם לקוח..." oninput="render()">
+    <input type="text" id="qinput" placeholder="חיפוש לפי שם לקוח..." oninput="render()"/>
   </div>
   <select id="fstatus" onchange="render()" style="min-width:130px">
     <option value="">כל הסטטוסים</option>
@@ -192,18 +192,18 @@ select option{background:#1a1a26}
     <div class="fg">
       <label>👤 שם לקוח *</label>
       <div class="autocomplete-wrap">
-        <input type="text" id="f-name" placeholder="שם מלא או לקוח קיים" oninput="acInput()" autocomplete="off">
+        <input type="text" id="f-name" placeholder="שם מלא או לקוח קיים" oninput="acInput()" autocomplete="off"/>
         <div class="autocomplete-list" id="ac-list" style="display:none"></div>
       </div>
     </div>
     <div class="g2">
-      <div class="fg"><label>📞 טלפון</label><input type="tel" id="f-phone" placeholder="050-0000000"></div>
-      <div class="fg"><label>💰 מחיר (₪)</label><input type="number" id="f-price" placeholder="0" min="0"></div>
+      <div class="fg"><label>📞 טלפון</label><input type="tel" id="f-phone" placeholder="050-0000000"/></div>
+      <div class="fg"><label>💰 מחיר (₪)</label><input type="number" id="f-price" placeholder="0" min="0"/></div>
     </div>
-    <div class="fg"><label>🖨️ תיאור העבודה *</label><input type="text" id="f-type" placeholder="למשל: שלט חיצוני, קאפה, באנר..."></div>
+    <div class="fg"><label>🖨️ תיאור העבודה *</label><input type="text" id="f-type" placeholder="למשל: שלט חיצוני, קאפה, באנר..."/></div>
     <div class="g2">
-      <div class="fg"><label>📅 תאריך כניסה *</label><input type="date" id="f-date"><input type="hidden" id="f-time"></div>
-      <div class="fg"><label>🗓️ תאריך מסירה</label><input type="date" id="f-due"></div>
+      <div class="fg"><label>📅 תאריך כניסה *</label><input type="date" id="f-date"/><input type="hidden" id="f-time"/></div>
+      <div class="fg"><label>🗓️ תאריך מסירה</label><input type="date" id="f-due"/></div>
     </div>
     <div class="fg"><label>📌 סטטוס</label>
       <select id="f-status">
@@ -213,12 +213,11 @@ select option{background:#1a1a26}
       </select>
     </div>
     <div class="install-check">
-      <input type="checkbox" id="f-install">
+      <input type="checkbox" id="f-install"/>
       <label for="f-install">🔧 הזמנה מצריכה התקנה שלנו</label>
     </div>
     <div class="fg"><label>📝 פירוט עבודה</label>
-      <textarea id="f-notes" placeholder="קאפה 50/70 = 100
-באנר 300/100 = 300" oninput="calcFromNotes()"></textarea>
+      <textarea id="f-notes" placeholder="קאפה 50/70 = 100&#10;באנר 300/100 = 300" oninput="calcFromNotes()"></textarea>
       <span style="font-size:11px;color:#888">מספר אחרי = בסוף שורה יחושב אוטומטית ⬇️</span>
     </div>
     <div class="mftr">
@@ -244,784 +243,9 @@ select option{background:#1a1a26}
   </div>
 </div>
 
-<div class="clients-list" id="clients-list"><div class="client-card">
-      <div class="client-header" data-name="אחים שוקרי" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;אחים שוקרי&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 אחים שוקרי</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ משבקות לרכבים</div>
-        <div class="job-meta">
-          <span>📅 11/06/2026</span>
-          
-          
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1031,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1031)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1031)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1031)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 מדבקות לוגו לרכבים גודל 30/20</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="אחים שוקרי" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לאחים שוקרי</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="בית הגפן" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;בית הגפן&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 בית הגפן</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ רול אפ</div>
-        <div class="job-meta">
-          <span>📅 11/06/2026</span>
-          
-          <span>📞 529660689</span>
-          <span class="job-price">💰 ₪430</span>
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1032,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1032)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1032)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1032)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 רול אפ = 250
-5 פוסטרים 50/70 = 180</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="בית הגפן" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לבית הגפן</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="הלל 58" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;הלל 58&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 הלל 58</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ שלטים</div>
-        <div class="job-meta">
-          <span>📅 11/06/2026</span>
-          
-          <span>📞 546540620</span>
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1033,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1033)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1033)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1033)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 מדבקה מכשיר החיאה  נשלח בווטס אפ  + 10/10  ( -1 ) רקע לבן כיתוב אדום  ועוד מס 0  כנל  +  פולט אור 20/10 שתי יח = שולם 100 שח כולל מע"מ</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="הלל 58" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה להלל 58</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="דוכן דגים כפר מכבי" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;דוכן דגים כפר מכבי&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 דוכן דגים כפר מכבי</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ עיצוב ווטס ( דרך ניזאר )</div>
-        <div class="job-meta">
-          <span>📅 11/06/2026</span>
-          
-          
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1034,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1034)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1034)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1034)" title="מחיקה">🗑️</button>
-        </div>
-        
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="דוכן דגים כפר מכבי" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לדוכן דגים כפר מכבי</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="אמסאלו זלאלם" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;אמסאלו זלאלם&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 אמסאלו זלאלם</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ עיצוב קאפה</div>
-        <div class="job-meta">
-          <span>📅 11/06/2026</span>
-          
-          <span>📞 548734331</span>
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1035,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1035)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1035)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1035)" title="מחיקה">🗑️</button>
-        </div>
-        
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="אמסאלו זלאלם" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לאמסאלו זלאלם</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="אנטולי" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;אנטולי&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 אנטולי</span>
-          <span class="client-badge">2 הזמנות</span><span style="font-size:11px;background:#052e16;color:#6ee7b7;padding:2px 8px;border-radius:8px;border:1px solid #059669;animation:pillPulse 1.4s ease-in-out infinite">1 מוכנה</span>
-          <div class="status-pills"><span class="spill spill-install">🔧 התקנה</span></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ מדבקה</div>
-        <div class="job-meta">
-          <span>📅 11/06/2026</span>
-          
-          <span>📞 543413730</span>
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1037,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1037)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1037)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1037)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 200//200</div>
-      </div><div class="job-row job-ready job-install">
-        <div class="job-type">🖨️ עיצוב + הפקה והתקנה למשאית <span class="install-tag">🔧 התקנה</span></div>
-        <div class="job-meta">
-          <span>📅 01/06/2026</span>
-          
-          <span>📞 543413730</span>
-          <span class="job-price">💰 ₪1,300</span>
-        </div>
-        <select class="ssel s-ready" onchange="chStatus(1006,this.value)"><option value="hold">בהמתנה</option><option value="prod">בייצור</option><option value="ready" selected="">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1006)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1006)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1006)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 מדבקה  150/200  2 יח' = 1200
-מדבקה 100/70  = 100</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="אנטולי" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לאנטולי</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="דפוס שורות" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;דפוס שורות&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 דפוס שורות</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ מדבקות</div>
-        <div class="job-meta">
-          <span>📅 11/06/2026</span>
-          
-          <span>📞 528888655</span>
-          
-        </div>
-        <select class="ssel s-prod" onchange="chStatus(1039,this.value)"><option value="hold">בהמתנה</option><option value="prod" selected="">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1039)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1039)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1039)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 מדבקות בחיתוך סגול</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="דפוס שורות" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לדפוס שורות</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="מדגה" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;מדגה&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 מדגה</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"><span class="spill spill-install">🔧 התקנה</span></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row job-install">
-        <div class="job-type">🖨️ הדבקת רכב מחדש <span class="install-tag">🔧 התקנה</span></div>
-        <div class="job-meta">
-          <span>📅 10/06/2026</span>
-          
-          <span>📞 547442226</span>
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1028,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1028)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1028)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1028)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 הדבקת רכב מדגה</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="מדגה" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה למדגה</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="עימאד וורוור" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;עימאד וורוור&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 עימאד וורוור</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ שלט</div>
-        <div class="job-meta">
-          <span>📅 09/06/2026</span>
-          
-          
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1019,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1019)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1019)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1019)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 שלט לעסק מואר</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="עימאד וורוור" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לעימאד וורוור</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="שבתאי אור" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;שבתאי אור&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name ready-glow">👤 שבתאי אור</span>
-          <span class="client-badge">1 הזמנה</span><span style="font-size:11px;background:#052e16;color:#6ee7b7;padding:2px 8px;border-radius:8px;border:1px solid #059669;animation:pillPulse 1.4s ease-in-out infinite">1 מוכנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row job-ready">
-        <div class="job-type">🖨️ מדבקות</div>
-        <div class="job-meta">
-          <span>📅 09/06/2026</span>
-          
-          <span>📞 505323743</span>
-          <span class="job-price">💰 ₪100</span>
-        </div>
-        <select class="ssel s-ready" onchange="chStatus(1023,this.value)"><option value="hold">בהמתנה</option><option value="prod">בייצור</option><option value="ready" selected="">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1023)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1023)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1023)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 500 מדבקות = 100</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="שבתאי אור" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לשבתאי אור</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="סמי נופי" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;סמי נופי&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 סמי נופי</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ ירין סקיצה במייל לטפל</div>
-        <div class="job-meta">
-          <span>📅 09/06/2026</span>
-          
-          
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1025,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1025)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1025)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1025)" title="מחיקה">🗑️</button>
-        </div>
-        
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="סמי נופי" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לסמי נופי</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="נחמיאס" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;נחמיאס&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 נחמיאס</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"><span class="spill spill-install">🔧 התקנה</span></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row job-install">
-        <div class="job-type">🖨️ שלט די נייט <span class="install-tag">🔧 התקנה</span></div>
-        <div class="job-meta">
-          <span>📅 09/06/2026</span>
-          
-          
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1026,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1026)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1026)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1026)" title="מחיקה">🗑️</button>
-        </div>
-        
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="נחמיאס" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לנחמיאס</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="ג׳ורג אסעד" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;ג׳ורג אסעד&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 ג׳ורג אסעד</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ שמשוניות</div>
-        <div class="job-meta">
-          <span>📅 09/06/2026</span>
-          
-          <span>📞 524241433</span>
-          <span class="job-price">💰 ₪1,700</span>
-        </div>
-        <select class="ssel s-prod" onchange="chStatus(1027,this.value)"><option value="hold">בהמתנה</option><option value="prod" selected="">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1027)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1027)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1027)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 שמשונית 400-300 שתי יח = 1500
-תרנים שמשונית 200/100 = 200</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="ג׳ורג אסעד" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לג׳ורג אסעד</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="עפארה בע&quot;מ" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;עפארה בע&quot;מ&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 עפארה בע"מ</span>
-          <span class="client-badge">2 הזמנות</span><span style="font-size:11px;background:#052e16;color:#6ee7b7;padding:2px 8px;border-radius:8px;border:1px solid #059669;animation:pillPulse 1.4s ease-in-out infinite">1 מוכנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ לוקובונד</div>
-        <div class="job-meta">
-          <span>📅 09/06/2026</span>
-          
-          
-          <span class="job-price">💰 ₪350</span>
-        </div>
-        <select class="ssel s-prod" onchange="chStatus(1036,this.value)"><option value="hold">בהמתנה</option><option value="prod" selected="">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1036)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1036)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1036)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 לוקובונד 100/70 שתי יח  = 350</div>
-      </div><div class="job-row job-ready">
-        <div class="job-type">🖨️ גליל אדום מחזיר אור</div>
-        <div class="job-meta">
-          <span>📅 07/06/2026</span>
-          
-          
-          <span class="job-price">💰 ₪1,400</span>
-        </div>
-        <select class="ssel s-ready" onchange="chStatus(1021,this.value)"><option value="hold">בהמתנה</option><option value="prod">בייצור</option><option value="ready" selected="">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1021)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1021)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1021)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 חתוך ל 5 ס"מ  = 1400</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="עפארה בע&quot;מ" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לעפארה בע"מ</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="חמודי איוב" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;חמודי איוב&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name ready-glow">👤 חמודי איוב</span>
-          <span class="client-badge">1 הזמנה</span><span style="font-size:11px;background:#052e16;color:#6ee7b7;padding:2px 8px;border-radius:8px;border:1px solid #059669;animation:pillPulse 1.4s ease-in-out infinite">1 מוכנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row job-ready">
-        <div class="job-type">🖨️ רול אפ</div>
-        <div class="job-meta">
-          <span>📅 08/06/2026</span>
-          
-          
-          
-        </div>
-        <select class="ssel s-ready" onchange="chStatus(1016,this.value)"><option value="hold">בהמתנה</option><option value="prod">בייצור</option><option value="ready" selected="">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1016)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1016)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1016)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 רול אפ</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="חמודי איוב" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לחמודי איוב</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="א.גרייס הנדסה" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;א.גרייס הנדסה&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 א.גרייס הנדסה</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ פי וי סי</div>
-        <div class="job-meta">
-          <span>📅 08/06/2026</span>
-          
-          <span>📞 523689000</span>
-          <span class="job-price">💰 ₪120</span>
-        </div>
-        <select class="ssel s-prod" onchange="chStatus(1020,this.value)"><option value="hold">בהמתנה</option><option value="prod" selected="">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1020)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1020)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1020)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 פי וי סי   30-30 סך הכל 6 שלטים 6 יח = 120</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="א.גרייס הנדסה" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לא.גרייס הנדסה</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="שתית בע&quot;מ" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;שתית בע&quot;מ&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 שתית בע"מ</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ שלטי חניה שמורה</div>
-        <div class="job-meta">
-          <span>📅 08/06/2026</span>
-          
-          
-          <span class="job-price">💰 ₪300</span>
-        </div>
-        <select class="ssel s-prod" onchange="chStatus(1024,this.value)"><option value="hold">בהמתנה</option><option value="prod" selected="">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1024)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1024)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1024)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 חניה שמורה פי וי סי 30/40  6 יח  50 שח יחידה = 300</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="שתית בע&quot;מ" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לשתית בע"מ</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="ד.שליט" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;ד.שליט&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 ד.שליט</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ שלט מואר  66/80</div>
-        <div class="job-meta">
-          <span>📅 07/06/2026</span>
-          
-          
-          <span class="job-price">💰 ₪1,200</span>
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1007,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1007)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1007)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1007)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 זהב ותאורת הילה</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="ד.שליט" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לד.שליט</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="הוואנה פלוס" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;הוואנה פלוס&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name ready-glow">👤 הוואנה פלוס</span>
-          <span class="client-badge">1 הזמנה</span><span style="font-size:11px;background:#052e16;color:#6ee7b7;padding:2px 8px;border-radius:8px;border:1px solid #059669;animation:pillPulse 1.4s ease-in-out infinite">1 מוכנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row job-ready">
-        <div class="job-type">🖨️ פי וי סי</div>
-        <div class="job-meta">
-          <span>📅 07/06/2026</span>
-          
-          
-          <span class="job-price">💰 ₪100</span>
-        </div>
-        <select class="ssel s-ready" onchange="chStatus(1018,this.value)"><option value="hold">בהמתנה</option><option value="prod">בייצור</option><option value="ready" selected="">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1018)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1018)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1018)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 שלטי ופי וי סי  30/20  4 יח = 100</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="הוואנה פלוס" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה להוואנה פלוס</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="גלדיס בנימין" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;גלדיס בנימין&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name ready-glow">👤 גלדיס בנימין</span>
-          <span class="client-badge">1 הזמנה</span><span style="font-size:11px;background:#052e16;color:#6ee7b7;padding:2px 8px;border-radius:8px;border:1px solid #059669;animation:pillPulse 1.4s ease-in-out infinite">1 מוכנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row job-ready">
-        <div class="job-type">🖨️ רול אפ</div>
-        <div class="job-meta">
-          <span>📅 06/06/2026</span>
-          
-          
-          
-        </div>
-        <select class="ssel s-ready" onchange="chStatus(1009,this.value)"><option value="hold">בהמתנה</option><option value="prod">בייצור</option><option value="ready" selected="">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1009)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1009)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1009)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 רול אפ 85/200 = 300 ( טרם שולם )</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="גלדיס בנימין" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לגלדיס בנימין</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="וויני" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;וויני&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 וויני</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"><span class="spill spill-install">🔧 התקנה</span></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row job-install">
-        <div class="job-type">🖨️ שלט אותיות <span class="install-tag">🔧 התקנה</span></div>
-        <div class="job-meta">
-          <span>📅 06/06/2026</span>
-          
-          
-          
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1014,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1014)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1014)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1014)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 + קופסאוץ כשר</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="וויני" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לוויני</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="חלקי חילוף המגינים" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;חלקי חילוף המגינים&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 חלקי חילוף המגינים</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"><span class="spill spill-install">🔧 התקנה</span></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row job-install">
-        <div class="job-type">🖨️ שלט מואר <span class="install-tag">🔧 התקנה</span></div>
-        <div class="job-meta">
-          <span>📅 01/06/2026</span>
-          
-          
-          
-        </div>
-        <select class="ssel s-prod" onchange="chStatus(1005,this.value)"><option value="hold">בהמתנה</option><option value="prod" selected="">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1005)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1005)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1005)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 שלט אותיות מוארות חזית לבן + כתום דופן 8 ס"מ</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="חלקי חילוף המגינים" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לחלקי חילוף המגינים</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="הנרי ליוס" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;הנרי ליוס&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name ready-glow">👤 הנרי ליוס</span>
-          <span class="client-badge">1 הזמנה</span><span style="font-size:11px;background:#052e16;color:#6ee7b7;padding:2px 8px;border-radius:8px;border:1px solid #059669;animation:pillPulse 1.4s ease-in-out infinite">1 מוכנה</span>
-          <div class="status-pills"><span class="spill spill-install">🔧 התקנה</span></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row job-ready job-install">
-        <div class="job-type">🖨️ שלט פרספקס מואר <span class="install-tag">🔧 התקנה</span></div>
-        <div class="job-meta">
-          <span>📅 01/06/2026</span>
-          
-          <span>📞 054-4561424</span>
-          <span class="job-price">💰 ₪1,400</span>
-        </div>
-        <select class="ssel s-ready" onchange="chStatus(1008,this.value)"><option value="hold">בהמתנה</option><option value="prod">בייצור</option><option value="ready" selected="">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1008)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1008)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1008)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 שלט פרספקס = 1400</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="הנרי ליוס" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה להנרי ליוס</button>
-        </div>
-      </div>
-    </div><div class="client-card">
-      <div class="client-header" data-name="סמי זייתון" onclick="toggleClient(this.dataset.name)">
-        <div class="client-name-wrap">
-          <button class="star-btn" onclick="event.stopPropagation();toggleUrgent(&#39;סמי זייתון&#39;)" title="סמן כדחוף">☆</button>
-          <span class="client-name">👤 סמי זייתון</span>
-          <span class="client-badge">1 הזמנה</span>
-          <div class="status-pills"></div>
-        </div>
-        <span class="chevron ">▼</span>
-      </div>
-      <div class="client-jobs ">
-        <div class="client-jobs-inner"><div class="job-row">
-        <div class="job-type">🖨️ פרספקס שחור</div>
-        <div class="job-meta">
-          <span>📅 28/05/2026</span>
-          
-          
-          <span class="job-price">💰 ₪1,300</span>
-        </div>
-        <select class="ssel s-hold" onchange="chStatus(1004,this.value)"><option value="hold" selected="">בהמתנה</option><option value="prod">בייצור</option><option value="ready">מוכן</option></select>
-        <div class="job-actions">
-          <button class="ibtn ibtn-send" onclick="openSum(1004)" title="שלח סיכום">📤</button>
-          <button class="ibtn ibtn-edit" onclick="openEdit(1004)" title="עריכה">✏️</button>
-          <button class="ibtn ibtn-del" onclick="delOrder(1004)" title="מחיקה">🗑️</button>
-        </div>
-        <div class="job-notes">📝 פרספקס שחור 80/20 מדבקה חיתוך כסף  3 יחידות  = 1300</div>
-      </div></div>
-        <div class="add-job-row">
-          <button class="btn-add-job" data-name="סמי זייתון" onclick="event.stopPropagation();openAddJobForClient(this.dataset.name)">＋ הוסף הזמנה לסמי זייתון</button>
-        </div>
-      </div>
-    </div></div>
+<div class="clients-list" id="clients-list">
+  <div class="loading">⏳ טוען הזמנות מ-Google Sheets...</div>
+</div>
 <div id="print-area"></div>
 </div>
 
@@ -1030,7 +254,7 @@ select option{background:#1a1a26}
 function localDate(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function localTime(){const d=new Date();return`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
 
-const SHEETS_URL='https://script.google.com/macros/s/AKfycbw1eMK2nf9Kj6mbL_0oSqA3HdXMKbJezr850OMLR7eA5iguUSswCnQwzGINwZ4RXcIO/exec';
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbxB28W3OI7M_DWM7X53WyhNZ0E_alFELxbRiS-WNXsWKnIq5LTLnpvZQRUfRLYol8_Q/exec';
 const SL={hold:'בהמתנה',prod:'בייצור',ready:'מוכן'};
 const SLR={'בהמתנה':'hold','בייצור':'prod','מוכן':'ready'};
 const SC={hold:'s-hold',prod:'s-prod',ready:'s-ready'};
@@ -1055,18 +279,33 @@ async function loadFromSheets(){
       if(id>=nextId)nextId=id+1;
       return{
         id,
-        name:  String(row['שם לקוח']  ||'').trim(),
-        type:  String(row['סוג עבודה']||'').trim(),
-        date:  fmtIn(row['תאריך כניסה']),
-        due:   fmtIn(row['תאריך מסירה']),
+        name:   String(row['שם לקוח']   ||'').trim(),
+        type:   String(row['סוג עבודה'] ||'').trim(),
+        date:   fmtIn(row['תאריך כניסה']),
+        due:    fmtIn(row['תאריך מסירה']),
         status,
-        notes: String(row['הערות']    ||'').trim(),
-        phone: String(row['טלפון']    ||'').trim(),
-        price: String(row['מחיר']     ||'').trim(),
-        install: ['כן','true','TRUE','1'].includes(String(row['התקנה']||'').trim()),
-        urgent: false
+        notes:  String(row['הערות']     ||'').trim(),
+        phone:  String(row['טלפון']     ||'').trim(),
+        price:  String(row['מחיר']      ||'').trim(),
+        install:['כן','true','TRUE','1'].includes(String(row['התקנה']    ||'').trim()),
+        time:   (()=>{
+          const t=String(row['שעת כניסה']||'').trim();
+          if(!t)return'';
+          // תאריך שגוי מ-Sheets (1899)
+          if(t.includes('T')){
+            const dt=new Date(t);
+            if(dt.getFullYear()<1970)return'';
+            dt.setHours(dt.getHours()+3);
+            return`${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
+          }
+          return t;
+        })(),
+        urgent: ['כן','true','TRUE','1'].includes(String(row['דחוף']     ||'').trim())
       };
     }).filter(o=>o.name);
+    // טען כוכביות מהנתונים
+    urgentClients.clear();
+    orders.forEach(o=>{if(o.urgent)urgentClients.add(o.name);});
     // מיון לפי תאריך + שעה — חדש ביותר ראשון
     orders.sort((a,b)=>{
       const aKey=(a.date||'')+(a.time||'');
@@ -1084,6 +323,16 @@ async function loadFromSheets(){
 function fmtIn(d){
   if(!d)return'';
   const s=String(d).trim();
+  if(!s||s==='0'||s==='')return'';
+  // תאריך עם T (UTC מ-Sheets)
+  if(s.includes('T')){
+    const dt=new Date(s);
+    // תאריך 1899 = שגוי מ-Sheets (שדה ריק)
+    if(dt.getFullYear()<1970)return'';
+    // UTC+3 ישראל
+    dt.setHours(dt.getHours()+3);
+    return`${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+  }
   if(s.includes('-'))return s.substring(0,10);
   if(s.includes('/')){const p=s.split('/');if(p.length===3)return`${p[2].substring(0,4)}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;}
   return'';
@@ -1182,7 +431,8 @@ function saveOrder(){
     due:    document.getElementById('f-due').value,
     status: document.getElementById('f-status').value,
     install:document.getElementById('f-install').checked,
-    notes:  document.getElementById('f-notes').value.trim()
+    notes:  document.getElementById('f-notes').value.trim(),
+    urgent: false
   };
   if(editJobId){
     const i=orders.findIndex(x=>x.id===editJobId);
@@ -1368,7 +618,7 @@ function render(){
       return`<div class="job-row${o.status==='ready'?' job-ready':''}${o.install?' job-install':''}">
         <div class="job-type">🖨️ ${o.type}${o.install?' <span class="install-tag">🔧 התקנה</span>':''}</div>
         <div class="job-meta">
-          <span>📅 ${fmtDate(o.date)}${o.time?` <span style='font-size:11px;color:#444;background:#1a1a26;padding:1px 6px;border-radius:5px;border:1px solid #2e2e3e'>${o.time}</span>`:''}</span>
+          <span>📅 ${fmtDate(o.date)}</span>
           ${o.due?`<span style="${od?'color:#f87171;font-weight:700':''}">🗓️ ${fmtDate(o.due)}${od?' ⚠':''}</span>`:''}
           ${o.phone?`<span>📞 ${o.phone}</span>`:''}
           ${o.price?`<span class="job-price">💰 ₪${Number(o.price).toLocaleString()}</span>`:''}
@@ -1419,10 +669,16 @@ function exportCSV(){
 }
 
 function toggleUrgent(name){
-  if(urgentClients.has(name))urgentClients.delete(name);
-  else urgentClients.add(name);
+  const isNowUrgent=!urgentClients.has(name);
+  if(isNowUrgent)urgentClients.add(name);
+  else urgentClients.delete(name);
+  // עדכן כל ההזמנות של הלקוח
+  orders.filter(o=>o.name===name).forEach(o=>{
+    o.urgent=isNowUrgent;
+    syncToSheets('save',{order:o});
+  });
   render();
-  showToast(urgentClients.has(name)?'⭐ סומן כדחוף':'☆ הוסרה דחיפות');
+  showToast(isNowUrgent?'⭐ סומן כדחוף':'☆ הוסרה דחיפות');
 }
 
 function chAllStatus(name,status){
@@ -1436,6 +692,5 @@ function chAllStatus(name,status){
 
 loadFromSheets();
 </script>
-
-
-</body></html>
+</body>
+</html>
