@@ -76,6 +76,8 @@ select option{background:#1a1a26}
 .spill-install{background:#292000;color:#fbbf24;border:1px solid #f59e0b}
 @keyframes pillPulse{0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,0.5)}50%{box-shadow:0 0 0 4px rgba(52,211,153,0)}}
 .chevron{color:#555;font-size:11px;transition:transform 0.2s;margin-right:6px}
+.wa-all-btn{background:#25D366;border:none;border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;color:#fff;font-weight:600;display:flex;align-items:center;gap:4px;transition:all 0.15s}
+.wa-all-btn:hover{background:#1aad53;transform:scale(1.05)}
 .chevron.open{transform:rotate(180deg)}
 .client-jobs{display:none;border-top:1px solid #2e2e3e}
 .client-jobs.open{display:block}
@@ -89,17 +91,18 @@ select option{background:#1a1a26}
 .job-price{font-size:12px;color:#fbbf24;font-weight:700}
 .job-notes{font-size:12px;color:#555;font-style:italic;width:100%;margin-top:2px}
 .job-actions{display:flex;gap:4px}
-.ssel{font-size:12px;border-radius:8px;padding:5px 10px;cursor:pointer;font-weight:700;border:2px solid transparent;min-width:90px;text-align:right}
+.ssel{font-size:11px;border-radius:20px;padding:3px 10px;cursor:pointer;font-weight:600;border:1px solid transparent;min-width:75px;text-align:center}
 .s-hold{background:#2d1545;color:#d19eff;border-color:#7c3aed}
 .s-prod{background:#0f2744;color:#93c5fd;border-color:#2563eb}
 .s-ready{background:#052e16;color:#6ee7b7;border-color:#059669;animation:pillPulse 1.4s ease-in-out infinite}
-.ibtn{border:none;cursor:pointer;padding:6px 8px;border-radius:8px;font-size:14px;transition:all 0.15s}
-.ibtn-send{background:#064e3b;color:#6ee7b7}
-.ibtn-send:hover{background:#065f46;transform:scale(1.08)}
-.ibtn-edit{background:#1e3a5f;color:#93c5fd}
-.ibtn-edit:hover{background:#1e40af;transform:scale(1.08)}
-.ibtn-del{background:#450a0a;color:#fca5a5}
-.ibtn-del:hover{background:#7f1d1d;transform:scale(1.08)}
+.s-done{background:#1a1a26;color:#555;border-color:#2e2e3e}
+.ibtn{border:none;cursor:pointer;padding:6px 10px;border-radius:8px;font-size:14px;transition:all 0.15s;font-weight:600}
+.ibtn-send{background:#25D366;color:#fff;box-shadow:0 2px 6px rgba(37,211,102,0.35)}
+.ibtn-send:hover{background:#1aad53;transform:scale(1.06)}
+.ibtn-edit{background:#1e3a8a;color:#93c5fd;box-shadow:0 2px 6px rgba(30,58,138,0.3)}
+.ibtn-edit:hover{background:#1e40af;transform:scale(1.06)}
+.ibtn-del{background:#7f1d1d;color:#fca5a5;box-shadow:0 2px 6px rgba(127,29,29,0.3)}
+.ibtn-del:hover{background:#991b1b;transform:scale(1.06)}
 .add-job-row{padding:10px 14px;border-top:1px solid #1e1e2e}
 .sum-box{background:#1a1a26;border-radius:10px;padding:16px;margin-bottom:14px;font-size:13px;line-height:2;white-space:pre-wrap;direction:rtl;text-align:right;border:1px solid #2e2e3e;color:#ccc}
 .sum-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -210,6 +213,7 @@ select option{background:#1a1a26}
         <option value="hold">🟣 בהמתנה</option>
         <option value="prod">🔵 בייצור</option>
         <option value="ready">🟢 מוכן</option>
+        <option value="done">✅ נמסרה</option>
       </select>
     </div>
     <div class="install-check">
@@ -222,6 +226,7 @@ select option{background:#1a1a26}
     </div>
     <div class="mftr">
       <button class="btn-cancel" onclick="closeAll()">ביטול</button>
+      <button class="btn-save" style="background:#25D366;box-shadow:0 2px 8px rgba(37,211,102,0.3)" onclick="saveAndSendWA()">💬 שמור ושלח</button>
       <button class="btn-save" onclick="saveOrder()">✔ שמור הזמנה</button>
     </div>
   </div>
@@ -255,9 +260,9 @@ function localDate(){const d=new Date();return`${d.getFullYear()}-${String(d.get
 function localTime(){const d=new Date();return`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;}
 
 const SHEETS_URL='https://script.google.com/macros/s/AKfycbxB28W3OI7M_DWM7X53WyhNZ0E_alFELxbRiS-WNXsWKnIq5LTLnpvZQRUfRLYol8_Q/exec';
-const SL={hold:'בהמתנה',prod:'בייצור',ready:'מוכן'};
-const SLR={'בהמתנה':'hold','בייצור':'prod','מוכן':'ready'};
-const SC={hold:'s-hold',prod:'s-prod',ready:'s-ready'};
+const SL={hold:'בהמתנה',prod:'בייצור',ready:'מוכן',done:'נמסרה'};
+const SLR={'בהמתנה':'hold','בייצור':'prod','מוכן':'ready','נמסרה':'done'};
+const SC={hold:'s-hold',prod:'s-prod',ready:'s-ready',done:'s-done'};
 let orders=[],nextId=1001,editJobId=null,sumOrder=null,openClients=new Set(),urgentClients=new Set();
 
 function setSyncState(s){
@@ -374,6 +379,7 @@ function resetForm(){
   document.getElementById('f-due').value='';
   document.getElementById('f-install').checked=false;
   document.getElementById('ac-list').style.display='none';
+
 }
 
 function openNewOrder(){
@@ -449,6 +455,15 @@ function saveOrder(){
   closeAll();render();
 }
 
+function saveAndSendWA(){
+  saveOrder();
+  setTimeout(()=>{
+    const name=document.getElementById('f-name').value.trim();
+    const order=orders.find(o=>o.name===name);
+    if(order)openSum(order.id);
+  },300);
+}
+
 function delOrder(id){
   if(!confirm('למחוק?'))return;
   orders=orders.filter(o=>o.id!==id);
@@ -475,6 +490,13 @@ function calcFromNotes(){
   const lines=txt.split('\n');
   let total=0;
   lines.forEach(line=>{
+    // תמיכה ב: טקסט × כמות = מחיר ליחידה
+    const mQty=line.match(/[×x\*]\s*(\d+(?:\.\d+)?)\s*=\s*(\d+(?:\.\d+)?)\s*$/i);
+    if(mQty){
+      total+=(parseFloat(mQty[1])||1)*(parseFloat(mQty[2])||0);
+      return;
+    }
+    // תמיכה ב: טקסט = מחיר
     const m=line.match(/=\s*(\d+(?:\.\d+)?)\s*$/);
     if(m)total+=parseFloat(m[1])||0;
   });
@@ -483,16 +505,44 @@ function calcFromNotes(){
 }
 
 function buildSummary(o){
-  let t='📋 סיכום הזמנה #'+o.id+'\n━━━━━━━━━━━━━━━━\n';
+  let t='📋 סיכום הזמנה\n━━━━━━━━━━━━━━━━\n';
   t+='👤 לקוח: '+o.name+'\n';
   if(o.phone)t+='📞 טלפון: '+o.phone+'\n';
   t+='🖨️ עבודה: '+o.type+'\n';
   if(o.install)t+='🔧 נדרשת התקנה שלנו\n';
   t+='\n📅 תאריך כניסה: '+fmtDate(o.date)+'\n';
   if(o.due&&o.due!=='—')t+='🗓️ תאריך מסירה: '+fmtDate(o.due)+'\n';
-  if(o.price)t+='💰 מחיר: ₪'+Number(o.price).toLocaleString()+' + מע"מ\n';
-  t+='📌 סטטוס: '+SL[o.status]+'\n';
-  if(o.notes)t+='\n📝 פירוט עבודה:\n'+o.notes+'\n';
+  // פירוט עבודה עם ₪ אחרי כל מחיר
+  if(o.notes){
+    t+='\n📝 פירוט עבודה:\n';
+    const lines=o.notes.split('\n');
+    let total=0;
+    lines.forEach(line=>{
+      // תמיכה ב × כמות = מחיר יחידה
+      const mQty=line.match(/([×x\*]\s*(\d+(?:\.\d+)?)\s*)=\s*(\d+(?:\.\d+)?)\s*$/i);
+      if(mQty){
+        const qty=parseFloat(mQty[2])||1;
+        const unitPrice=parseFloat(mQty[3])||0;
+        const lineTotal=Math.round(qty*unitPrice);
+        total+=lineTotal;
+        const lineTxt=line.replace(/[×x\*]\s*\d+(?:\.\d+)?\s*=\s*\d+(?:\.\d+)?\s*$/i,'').trim();
+        t+=lineTxt+' × '+qty+' = '+Number(lineTotal).toLocaleString()+' ₪\n';
+        return;
+      }
+      const m=line.match(/=\s*(\d+(?:\.\d+)?)\s*$/);
+      if(m){
+        const price=parseFloat(m[1]);
+        total+=price;
+        const lineTxt=line.replace(/=\s*\d+(?:\.\d+)?\s*$/,'').trim();
+        t+=lineTxt+' = '+Number(price).toLocaleString()+' ₪\n';
+      } else if(line.trim()){
+        t+=line+'\n';
+      }
+    });
+    if(total>0)t+='💰 סה"כ: '+Number(total).toLocaleString()+' ₪ + מע"מ\n';
+  } else if(o.price){
+    t+='💰 מחיר: ₪'+Number(o.price).toLocaleString()+' + מע"מ\n';
+  }
   t+='\n━━━━━━━━━━━━━━━━';
   return t;
 }
@@ -535,42 +585,96 @@ function printReady(){
     clientMap.get(o.name).push(o);
   });
 
-  let rows='';
+  let clientBlocks='';
   clientMap.forEach((jobs,name)=>{
-    jobs.forEach((o,idx)=>{
-      let detailHtml='';
+    const phone=jobs.find(j=>j.phone)?.phone||'';
+    const hasInstall=jobs.some(j=>j.install);
+    let clientTotal=0;
+    let rows='';
+
+    jobs.forEach(o=>{
       if(o.notes){
         const lines=o.notes.split('\n').filter(l=>l.trim());
-        detailHtml='<ul style="margin:0;padding:0;list-style:none">'+lines.map(line=>{
+        lines.forEach(line=>{
+          // × כמות = מחיר יחידה
+          const mQty=line.match(/([×x*]\s*(\d+(?:\.\d+)?)\s*)=\s*(\d+(?:\.\d+)?)\s*$/i);
+          if(mQty){
+            const qty=parseFloat(mQty[2])||1;
+            const unitPrice=parseFloat(mQty[3])||0;
+            const lineTotal=Math.round(qty*unitPrice);
+            clientTotal+=lineTotal;
+            const lineTxt=line.replace(/[×x*]\s*\d+(?:\.\d+)?\s*=\s*\d+(?:\.\d+)?\s*$/i,'').trim();
+            rows+=`<tr style="border-bottom:1px solid #eee">
+              <td style="padding:7px 12px">${lineTxt}</td>
+              <td style="padding:7px 12px;text-align:center">${qty}</td>
+              <td style="padding:7px 12px;text-align:center">${Number(unitPrice).toLocaleString()} ₪</td>
+              <td style="padding:7px 12px;text-align:left;font-weight:700">${Number(lineTotal).toLocaleString()} ₪</td>
+            </tr>`;
+            return;
+          }
+          // = מחיר רגיל
           const m=line.match(/=\s*(\d+(?:\.\d+)?)\s*$/);
-          const linePrice=m?'<span style="float:left;font-weight:700">₪'+Number(m[1]).toLocaleString()+'</span>':'';
-          const lineTxt=line.replace(/=\s*\d+(?:\.\d+)?\s*$/,'').trim();
-          return`<li style="padding:2px 0;border-bottom:1px solid #eee;overflow:hidden">${lineTxt}${linePrice}</li>`;
-        }).join('')+'</ul>';
+          if(m){
+            const price=parseFloat(m[1])||0;
+            clientTotal+=price;
+            const lineTxt=line.replace(/=\s*\d+(?:\.\d+)?\s*$/,'').trim();
+            rows+=`<tr style="border-bottom:1px solid #eee">
+              <td style="padding:7px 12px">${lineTxt}</td>
+              <td style="padding:7px 12px;text-align:center">1</td>
+              <td style="padding:7px 12px;text-align:center">${Number(price).toLocaleString()} ₪</td>
+              <td style="padding:7px 12px;text-align:left;font-weight:700">${Number(price).toLocaleString()} ₪</td>
+            </tr>`;
+          } else if(line.trim()){
+            rows+=`<tr style="border-bottom:1px solid #eee">
+              <td style="padding:7px 12px" colspan="4">${line}</td>
+            </tr>`;
+          }
+        });
+      } else if(o.price){
+        const price=parseFloat(o.price)||0;
+        clientTotal+=price;
+        rows+=`<tr style="border-bottom:1px solid #eee">
+          <td style="padding:7px 12px">${o.type}</td>
+          <td style="padding:7px 12px;text-align:center">1</td>
+          <td style="padding:7px 12px;text-align:center">${Number(price).toLocaleString()} ₪</td>
+          <td style="padding:7px 12px;text-align:left;font-weight:700">${Number(price).toLocaleString()} ₪</td>
+        </tr>`;
       }
-      // שורה ראשונה — עם שם לקוח, שורות נוספות — שם ריק
-      const clientCell = idx===0
-        ? `<td rowspan="${jobs.length}" class="client-td" style="vertical-align:top"><strong style="font-size:14px">${name}</strong>${jobs[0].phone?`<br><span style="font-size:11px;color:#888;margin-top:2px;display:block">${jobs[0].phone}</span>`:''}${jobs.some(j=>j.install)?'<br><span style="font-size:11px;background:#fff3cd;color:#856404;padding:2px 7px;border-radius:3px;display:inline-block;margin-top:4px">🔧 התקנה</span>':''}</td>`
-        : '';
-      rows+=`<tr style="${idx>0?'border-top:1px dashed #eee':''}">
-        ${clientCell}
-        <td>${o.type}${o.install&&idx>0?' 🔧':''}</td>
-        <td style="color:#666">${fmtDate(o.date)}</td>
-        <td>${detailHtml||'—'}</td>
-        <td><strong>${o.price?'₪'+Number(o.price).toLocaleString()+' + מע"מ':'—'}</strong></td>
-      </tr>`;
     });
-    // קו הפרדה בין לקוחות
-    rows+=`<tr class="sep-row"><td colspan="5"></td></tr>`;
+
+    clientBlocks+=`<div style="border:1px solid #ccc;border-radius:6px;overflow:hidden;margin-bottom:16px">
+      <div style="background:#f0f0f0;padding:8px 14px;border-bottom:1px solid #ccc;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <span style="font-size:15px;font-weight:700">${name}</span>
+          ${phone?`<span style="font-size:12px;color:#555;margin-right:10px">${phone}</span>`:''}
+          ${hasInstall?'<span style="font-size:11px;background:#fff3cd;color:#856404;padding:1px 7px;border-radius:3px">🔧 התקנה</span>':''}
+        </div>
+        <span style="font-size:12px;color:#333">${jobs.length} הזמנ${jobs.length===1?'ה':'ות'}</span>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="background:#fafafa;border-bottom:1px solid #ddd">
+            <th style="padding:7px 12px;text-align:right;font-weight:600;color:#444;width:35%">פריט</th>
+            <th style="padding:7px 12px;text-align:center;font-weight:600;color:#444;width:15%">כמות</th>
+            <th style="padding:7px 12px;text-align:center;font-weight:600;color:#444;width:20%">מחיר ליח'</th>
+            <th style="padding:7px 12px;text-align:left;font-weight:600;color:#444;width:30%">סה"כ</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+        <tfoot>
+          <tr style="background:#f5f5f5;border-top:2px solid #ccc">
+            <td colspan="3" style="padding:8px 12px;font-weight:700;text-align:right">סה"כ ללקוח</td>
+            <td style="padding:8px 12px;font-weight:700;font-size:15px;text-align:left">${clientTotal>0?Number(clientTotal).toLocaleString()+' ₪ + מע"מ':'—'}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>`;
   });
 
   document.getElementById('print-area').innerHTML=`<div class="print-page">
     <div class="print-title">🖨️ הזמנות מוכנות לאיסוף — בית דפוס</div>
     <div class="print-date">הודפס: ${now} | סה"כ ${readyOrders.length} הזמנות | ${clientMap.size} לקוחות</div>
-    <table class="print-table">
-      <thead><tr><th style="width:20%">לקוח</th><th style="width:17%">עבודה</th><th style="width:12%">כניסה</th><th style="width:33%">פירוט</th><th style="width:18%">מחיר</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>
+    ${clientBlocks}
   </div>`;
   window.print();
 }
@@ -578,7 +682,11 @@ function printReady(){
 function filtered(){
   const q=document.getElementById('qinput').value.toLowerCase();
   const fs=document.getElementById('fstatus').value;
-  return orders.filter(o=>(!q||o.name.toLowerCase().includes(q))&&(!fs||o.status===fs));
+  return orders.filter(o=>
+    o.status!=='done' &&
+    (!q||o.name.toLowerCase().includes(q))&&
+    (!fs||o.status===fs)
+  );
 }
 
 function render(){
@@ -666,6 +774,42 @@ function exportCSV(){
   const csv='\uFEFF'+[h,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='הזמנות.csv';a.click();
   showToast('✅ הורד בהצלחה');
+}
+
+function sendAllWA(name){
+  const clientOrders=orders.filter(o=>o.name===name);
+  if(!clientOrders.length)return;
+  const phone=clientOrders.find(o=>o.phone)?.phone||'';
+  let txt='📋 הזמנות מוכנות לאיסוף\n👤 '+name+'\n━━━━━━━━━━━━━━━━\n';
+  clientOrders.forEach((o,i)=>{
+    txt+='\n🖨️ '+(i+1)+'. '+o.type+'\n';
+    if(o.notes){
+      const lines=o.notes.split('\n');
+      let total=0;
+      lines.forEach(line=>{
+        const m=line.match(/=\s*(\d+(?:\.\d+)?)\s*$/);
+        if(m){
+          const price=parseFloat(m[1]);
+          total+=price;
+          txt+=line.replace(/=\s*\d+(?:\.\d+)?\s*$/,'').trim()+' = '+Number(price).toLocaleString()+' ₪\n';
+        } else if(line.trim()){
+          txt+=line+'\n';
+        }
+      });
+      if(total>0)txt+='💰 סה"כ: '+Number(total).toLocaleString()+' ₪ + מע"מ\n';
+    } else if(o.price){
+      txt+='💰 '+Number(o.price).toLocaleString()+' ₪ + מע"מ\n';
+    }
+  });
+  txt+='\n━━━━━━━━━━━━━━━━';
+  const enc=encodeURIComponent(txt);
+  if(phone){
+    const num=phone.replace(/\D/g,'');
+    const intl=num.startsWith('0')?'972'+num.substring(1):num;
+    window.open(`whatsapp://send?phone=${intl}&text=${enc}`,'_blank');
+  } else {
+    window.open(`https://wa.me/?text=${enc}`,'_blank');
+  }
 }
 
 function toggleUrgent(name){
