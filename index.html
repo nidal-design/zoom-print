@@ -103,6 +103,8 @@ select option{background:#1a1a26}
 .ibtn-edit:hover{background:#1e40af;transform:scale(1.06)}
 .ibtn-del{background:#7f1d1d;color:#fca5a5;box-shadow:0 2px 6px rgba(127,29,29,0.3)}
 .ibtn-del:hover{background:#991b1b;transform:scale(1.06)}
+.ibtn-print{background:#065f46;color:#6ee7b7;box-shadow:0 2px 6px rgba(6,95,70,0.3)}
+.ibtn-print:hover{background:#047857;transform:scale(1.06)}
 .add-job-row{padding:10px 14px;border-top:1px solid #1e1e2e}
 .sum-box{background:#1a1a26;border-radius:10px;padding:16px;margin-bottom:14px;font-size:13px;line-height:2;white-space:pre-wrap;direction:rtl;text-align:right;border:1px solid #2e2e3e;color:#ccc}
 .sum-actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -573,6 +575,81 @@ function sendMail(){
 }
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
+function printSingle(id){
+  const o=orders.find(x=>x.id===id);
+  if(!o)return;
+  const now=new Date().toLocaleDateString('he-IL',{day:'2-digit',month:'2-digit',year:'numeric'});
+  let rows='';
+  let total=0;
+  if(o.notes){
+    const lines=o.notes.split('\n').filter(l=>l.trim());
+    lines.forEach(line=>{
+      const mQty=line.match(/([×x*]\s*(\d+(?:\.\d+)?)\s*)=\s*(\d+(?:\.\d+)?)\s*$/i);
+      if(mQty){
+        const qty=parseFloat(mQty[2])||1;
+        const unitPrice=parseFloat(mQty[3])||0;
+        const lineTotal=Math.round(qty*unitPrice);
+        total+=lineTotal;
+        const lineTxt=line.replace(/[×x*]\s*\d+(?:\.\d+)?\s*=\s*\d+(?:\.\d+)?\s*$/i,'').trim();
+        rows+=`<tr style="border-bottom:1px solid #eee">
+          <td style="padding:7px 12px">${lineTxt}</td>
+          <td style="padding:7px 12px;text-align:center">${qty}</td>
+          <td style="padding:7px 12px;text-align:center">${Number(unitPrice).toLocaleString()} ₪</td>
+          <td style="padding:7px 12px;text-align:left;font-weight:700">${Number(lineTotal).toLocaleString()} ₪</td>
+        </tr>`;
+        return;
+      }
+      const m=line.match(/=\s*(\d+(?:\.\d+)?)\s*$/);
+      if(m){
+        const price=parseFloat(m[1])||0;
+        total+=price;
+        const lineTxt=line.replace(/=\s*\d+(?:\.\d+)?\s*$/,'').trim();
+        rows+=`<tr style="border-bottom:1px solid #eee">
+          <td style="padding:7px 12px">${lineTxt}</td>
+          <td style="padding:7px 12px;text-align:center">1</td>
+          <td style="padding:7px 12px;text-align:center">${Number(price).toLocaleString()} ₪</td>
+          <td style="padding:7px 12px;text-align:left;font-weight:700">${Number(price).toLocaleString()} ₪</td>
+        </tr>`;
+      } else if(line.trim()){
+        rows+=`<tr style="border-bottom:1px solid #eee"><td colspan="4" style="padding:7px 12px">${line}</td></tr>`;
+      }
+    });
+  } else if(o.price){
+    const price=parseFloat(o.price)||0;
+    total=price;
+    rows+=`<tr><td style="padding:7px 12px">${o.type}</td><td style="padding:7px 12px;text-align:center">1</td><td style="padding:7px 12px;text-align:center">${Number(price).toLocaleString()} ₪</td><td style="padding:7px 12px;text-align:left;font-weight:700">${Number(price).toLocaleString()} ₪</td></tr>`;
+  }
+
+  document.getElementById('print-area').innerHTML=`<div class="print-page">
+    <div class="print-title">🖨️ הזמנה — בית דפוס</div>
+    <div class="print-date">הודפס: ${now}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:16px;padding:12px;background:#f9f9f9;border-radius:6px;border:1px solid #eee">
+      <div><span style="color:#666">לקוח:</span> <strong>${o.name}</strong></div>
+      ${o.phone?`<div><span style="color:#666">טלפון:</span> ${o.phone}</div>`:'<div></div>'}
+      <div><span style="color:#666">עבודה:</span> ${o.type}${o.install?' 🔧':''}</div>
+      <div><span style="color:#666">תאריך כניסה:</span> ${fmtDate(o.date)}</div>
+      ${o.due?`<div><span style="color:#666">תאריך מסירה:</span> ${fmtDate(o.due)}</div>`:''}
+      <div><span style="color:#666">סטטוס:</span> ${SL[o.status]||o.status}</div>
+    </div>
+    ${rows?`<div style="border:1px solid #ddd;border-radius:6px;overflow:hidden">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead><tr style="background:#f5f5f5;border-bottom:1px solid #ddd">
+          <th style="padding:8px 12px;text-align:right;font-weight:600;color:#444;width:40%">פריט</th>
+          <th style="padding:8px 12px;text-align:center;font-weight:600;color:#444;width:15%">כמות</th>
+          <th style="padding:8px 12px;text-align:center;font-weight:600;color:#444;width:20%">מחיר ליח'</th>
+          <th style="padding:8px 12px;text-align:left;font-weight:600;color:#444;width:25%">סה"כ</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+        <tfoot><tr style="background:#f5f5f5;border-top:2px solid #ccc">
+          <td colspan="3" style="padding:8px 12px;font-weight:700;text-align:right">סה"כ</td>
+          <td style="padding:8px 12px;font-weight:700;font-size:15px;text-align:left">${total>0?Number(total).toLocaleString()+' ₪ + מע"מ':'—'}</td>
+        </tr></tfoot>
+      </table>
+    </div>`:''}
+  </div>`;
+  window.print();
+}
+
 function printReady(){
   const readyOrders=orders.filter(o=>o.status==='ready');
   if(!readyOrders.length){showToast('⚠️ אין הזמנות מוכנות להדפסה');return;}
@@ -734,6 +811,7 @@ function render(){
         <select class="ssel ${SC[o.status]}" onchange="chStatus(${o.id},this.value)">${Object.entries(SL).map(([k,v])=>`<option value="${k}"${o.status===k?' selected':''}>${v}</option>`).join('')}</select>
         <div class="job-actions">
           <button class="ibtn ibtn-send" onclick="openSum(${o.id})" title="שלח סיכום">📤</button>
+          <button class="ibtn ibtn-print" onclick="printSingle(${o.id})" title="הדפס הזמנה">🖨️</button>
           <button class="ibtn ibtn-edit" onclick="openEdit(${o.id})" title="עריכה">✏️</button>
           <button class="ibtn ibtn-del" onclick="delOrder(${o.id})" title="מחיקה">🗑️</button>
         </div>
